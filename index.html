@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تي إكليسيا للمستلزمات الكنسية</title>
+<link rel="icon" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1c1c7c;--navy2:#0f0f4a;--cream:#faf6dc;--paper:#fffdf3;--line:#ded6a8;--ink:#1a1a45;--mute:#6a6890;--red:#a8281f;--gold:#a8791c;--gold2:#d4a947;--tint:#f1ebc4;--serif:Amiri,"Times New Roman",serif}
+*{box-sizing:border-box;margin:0}
+body{font-family:"IBM Plex Sans Arabic",Tahoma,sans-serif;background:var(--cream);color:var(--ink);line-height:1.75;font-size:16px}
+button,input,textarea{font:inherit;color:inherit}
+h1,h2,h3{font-family:var(--serif);line-height:1.35}
+header{background:var(--navy2);background-image:radial-gradient(ellipse at 50% 0,#2a2aa0 0,transparent 70%);color:var(--cream);padding:30px 16px 44px;text-align:center;position:relative;border-bottom:4px solid var(--gold)}
+header::after{content:"";position:absolute;inset:auto 0 -9px 0;height:2px;background:var(--gold2)}
+header img{width:132px;height:132px;border-radius:50%;border:3px solid var(--gold2);background:var(--cream);padding:4px;box-shadow:0 0 0 6px rgba(212,169,71,.25)}
+header h1{font-size:2.6rem;font-weight:700;margin-top:14px;letter-spacing:.01em}
+header p{color:var(--gold2);font-size:1.02rem;margin-top:2px}
+main{max-width:1100px;margin:0 auto;padding:26px 16px 16px}
+.bar{display:flex;gap:10px;margin:0 0 26px}
+.bar input{flex:1;padding:12px 16px;border:1px solid var(--line);border-bottom:2px solid var(--navy);border-radius:6px;background:var(--paper)}
+.bar input:focus{outline:none;border-color:var(--gold)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:22px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;padding:10px 10px 0}
+.card .ph{aspect-ratio:4/4.4;background:var(--navy) center/cover;display:grid;place-items:center;color:var(--gold2);font-size:3rem;position:relative;border-radius:999px 999px 6px 6px;border:2px solid var(--gold)}
+.card .body{padding:14px 6px 14px;display:flex;flex-direction:column;gap:4px;flex:1}
+.card h3{font-size:1.3rem;color:var(--navy)}
+.card p{color:var(--mute);font-size:.92rem;flex:1}
+.price{font-weight:700;font-size:1.2rem;color:var(--navy)}
+.old{text-decoration:line-through;color:var(--mute);font-weight:400;font-size:.92rem;margin-inline-start:8px}
+.tag{position:absolute;top:34px;inset-inline-start:-4px;background:var(--red);color:#fff;font-size:.8rem;padding:1px 14px;border-radius:4px;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+.tag.gone{background:#4d4d63}
+.empty{text-align:center;color:var(--mute);padding:40px 0}
+.btn{background:var(--navy);color:var(--cream);border:1px solid var(--navy);padding:9px 20px;border-radius:6px;cursor:pointer;font-weight:600;transition:background .15s,border-color .15s,color .15s}
+.btn:hover:not(:disabled){background:var(--navy2);border-color:var(--gold)}
+.btn.alt{background:transparent;color:var(--navy);border:1px solid var(--navy)}
+.btn.alt:hover:not(:disabled){background:var(--tint)}
+.btn.red{background:var(--red);border-color:var(--red)}
+.btn:focus-visible,input:focus-visible,textarea:focus-visible,.catbtn:focus-visible,.tile:focus-visible,.chead:focus-visible,.citem:focus-visible{outline:3px solid var(--gold2);outline-offset:2px}
+footer{text-align:center;color:var(--cream);background:var(--navy2);border-top:4px solid var(--gold);padding:28px 16px;margin-top:34px;font-family:var(--serif);font-size:1.15rem}
+footer a{color:var(--cream);cursor:pointer;text-decoration:none;opacity:.6}
+.modal{position:fixed;inset:0;background:rgba(15,15,74,.65);display:none;place-items:center;padding:16px;z-index:9}
+.modal.open{display:grid}
+.box{background:var(--paper);border-radius:10px;padding:24px;width:100%;max-width:400px;border:1px solid var(--gold);box-shadow:0 0 0 5px var(--paper),0 0 0 6px var(--line),0 20px 50px rgba(0,0,0,.35)}
+.box h2{margin-bottom:10px;color:var(--navy);font-size:1.5rem}
+.box input,.panel input,.panel textarea{width:100%;padding:10px 12px;margin:5px 0;border:1px solid var(--line);border-radius:6px;background:#fff}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.err{color:var(--red);min-height:1.4em;font-size:.9rem}
+.panel{background:var(--paper);border:1px solid var(--gold);border-top:5px solid var(--navy);border-radius:8px;padding:20px;margin-bottom:28px;display:none}
+.panel.open{display:block}
+.panel h2{margin-bottom:6px;color:var(--navy)}
+.panel h3{color:var(--navy)}
+.panel .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.who{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.badge{background:var(--navy);color:var(--cream);padding:1px 11px;border-radius:99px;font-size:.8rem;font-family:"IBM Plex Sans Arabic",sans-serif}
+.cartfab{position:fixed;bottom:18px;inset-inline-start:18px;z-index:8;box-shadow:0 6px 18px rgba(15,15,74,.45);padding:12px 22px;border-color:var(--gold2);border-width:2px}
+.cartfab b{background:var(--gold2);color:var(--navy2);border-radius:99px;padding:0 9px;margin-inline-start:6px}
+.qty{display:flex;align-items:center;gap:8px}
+.qty button{width:32px;height:32px;border-radius:6px;border:1px solid var(--navy);background:transparent;cursor:pointer;font-weight:700}
+.qty button:hover{background:var(--tint)}
+.up{display:inline-block;border:1px dashed var(--navy);border-radius:6px;padding:8px 14px;cursor:pointer;margin:5px 0;font-weight:600}
+#fPrev{display:block;max-width:140px;border-radius:6px;margin:6px 0;border:1px solid var(--line)}
+.box.wide{max-width:520px;max-height:90vh;overflow:auto}
+.ok{color:#14683a;font-weight:600;padding:14px 0}
+.ord{border-top:1px solid var(--line);padding:12px 0}
+.card .btn:disabled{opacity:.5;cursor:not-allowed}
+.menubtn{position:absolute;top:16px;inset-inline-start:16px;background:transparent;border:1px solid var(--gold2);color:var(--gold2);width:46px;height:46px;border-radius:6px;font-size:1.5rem;line-height:1;cursor:pointer;z-index:2}
+.menubtn:hover{background:rgba(212,169,71,.15)}
+.drawer{position:fixed;top:0;bottom:0;inset-inline-start:0;width:min(310px,86vw);background:var(--paper);border-inline-end:4px solid var(--gold);z-index:20;transform:translateX(100%);transition:transform .25s;padding:20px;overflow:auto}
+.drawer h2{color:var(--navy);font-size:1.6rem}
+.drawer.open{transform:none}
+.veil{position:fixed;inset:0;background:rgba(15,15,74,.55);z-index:19;display:none}
+.veil.open{display:block}
+.catbtn{display:block;width:100%;text-align:start;background:transparent;border:1px solid var(--line);border-radius:6px;padding:9px 12px;margin:6px 0;cursor:pointer;font-weight:600}
+.catbtn.on{background:var(--navy);color:var(--cream);border-color:var(--navy)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:22px;margin-bottom:10px}
+.tiles[hidden]{display:none}
+.tile{background:transparent;border:0;padding:0;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center}
+.tile .tph{width:100%;aspect-ratio:3/3.6;background:var(--navy) center/cover;display:grid;place-items:center;color:var(--gold2);font-size:2.6rem;border-radius:999px 999px 6px 6px;border:2px solid var(--gold);box-shadow:0 0 0 5px var(--cream),0 0 0 6px var(--line);transition:transform .2s}
+.tile:hover .tph{transform:translateY(-3px)}
+.tile b{padding:14px 8px 0;font-family:var(--serif);font-size:1.3rem;color:var(--navy);font-weight:700;line-height:1.3}
+.tile small{padding:0 8px 6px;color:var(--mute)}
+.cgrp{margin:10px 0;border-bottom:1px solid var(--line);padding-bottom:6px}
+.chead{display:block;width:100%;text-align:start;background:transparent;border:0;font-family:var(--serif);font-weight:700;font-size:1.2rem;color:var(--navy);padding:8px 6px;cursor:pointer;border-radius:6px}
+.chead.on{background:var(--tint)}
+.citem{display:block;width:calc(100% - 6px);text-align:start;background:transparent;border:0;border-inline-start:2px solid var(--gold2);font-weight:400;color:var(--mute);padding:5px 12px;margin-inline-start:6px;cursor:pointer;font-size:.95rem}
+.citem:hover{color:var(--navy)}
+.citem.out{opacity:.5}
+.card.flash{outline:4px solid var(--gold2);outline-offset:2px}
+.stats{width:calc(100% - 32px);max-width:1100px;margin:14px auto 0;padding:24px 10px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:var(--navy2);color:var(--cream);border-radius:8px;border:1px solid var(--gold);text-align:center}
+.stats[hidden]{display:none}
+.stats>div+div{border-inline-start:1px solid rgba(212,169,71,.4)}
+.stats .ic{display:grid;place-items:center;width:44px;height:44px;margin:0 auto 4px;border-radius:50%;border:1px solid var(--gold2);font-size:1.2rem;color:var(--gold2)}
+.stats b{display:block;font-family:var(--serif);font-size:2.1rem;color:var(--gold2);line-height:1.2}
+.stats small{color:var(--cream);opacity:.85}
+.stb{border:1px solid var(--navy);background:transparent;color:var(--navy);border-radius:6px;padding:8px 14px;cursor:pointer;font-weight:600}
+.stb.on{background:#1e8e3e;border-color:#1e8e3e;color:#fff}
+.orow{display:flex;gap:6px;margin:4px 0}
+.orow input{flex:1;min-width:0;margin:0!important}
+.orow input:nth-child(2){flex:0 0 120px}
+.opt{display:flex;align-items:center;gap:8px;padding:6px 0}
+.opt input{width:auto!important;margin:0!important;padding:0!important}
+.qty .del{border-color:var(--red)}
+#catTitle{font-size:1.9rem;color:var(--navy);padding-bottom:6px;border-bottom:2px solid var(--gold);display:inline-block}
+@media(prefers-reduced-motion:reduce){.drawer,.tile .tph,.btn{transition:none}}
+@media(max-width:520px){.panel .two{grid-template-columns:1fr}header h1{font-size:2rem}.grid{grid-template-columns:repeat(2,1fr);gap:12px}.card .body{padding:10px 2px}.card h3{font-size:1.1rem}.card p{display:none}.tiles{grid-template-columns:repeat(2,1fr);gap:16px}}
+</style>
+</head>
+<body>
+
+<header>
+  <button class="menubtn" id="menuBtn" aria-label="القائمة">☰</button>
+  <img src="logo.png" alt="شعار تي إكليسيا">
+  <h1>تي إكليسيا</h1>
+  <p>للمستلزمات الكنسية · أولاد وهيب</p>
+</header>
+
+<main>
+  <!-- لوحة الموظفين: تظهر فقط بعد تسجيل دخول حساب مصرح له -->
+  <section class="panel" id="panel">
+    <div class="who">
+      <h2>لوحة التحكم <span class="badge" id="roleBadge"></span></h2>
+      <div><span id="whoami"></span> <button class="btn alt" id="logout">خروج</button></div>
+    </div>
+    <h3 id="formTitle">إضافة منتج</h3>
+    <input id="fName" placeholder="اسم المنتج">
+    <input id="fCat" list="catList" placeholder="القسم (مثلاً: ايشاربات)"><datalist id="catList"></datalist>
+    <div class="two">
+      <input id="fPrice" type="number" min="0" placeholder="السعر (ج.م)">
+      <input id="fDisc" type="number" min="0" max="100" placeholder="خصم % (اختياري)">
+    </div>
+    <input id="fQty" type="number" min="0" placeholder="الكمية المتاحة (اتركها فاضية لو غير محدودة)">
+    <textarea id="fDesc" rows="2" placeholder="الوصف"></textarea>
+    <h3 style="margin-top:8px">المقاسات (اختياري)</h3>
+    <div id="sizeRows"></div><button class="btn alt" type="button" id="addSize">+ إضافة مقاس</button>
+    <h3 style="margin-top:8px">خيارات الحفر (اختياري)</h3>
+    <div id="engRows"></div><button class="btn alt" type="button" id="addEng">+ إضافة خيار حفر</button><br>
+    <label class="up">📷 اختر صورة المنتج<input type="file" id="fFile" accept="image/*" hidden></label>
+    <img id="fPrev" alt="" hidden><input id="fImg" type="hidden">
+    <label><input type="checkbox" id="fAvail" checked style="width:auto"> متاح للبيع</label>
+    <div class="row"><button class="btn" id="save">حفظ المنتج</button><button class="btn alt" id="cancel" hidden>إلغاء التعديل</button></div>
+    <div class="err" id="formErr"></div>
+    <h3 style="margin-top:10px" id="mineTitle">منتجاتي</h3>
+    <div id="mine"></div>
+
+    <div id="ownerOnly" hidden>
+      <h3 style="margin-top:16px">الموظفون</h3>
+      <p style="color:var(--mute);font-size:.9rem">أنشئ حساب للموظف باسم مستخدم (إنجليزي) وكلمة مرور، وسلّمهم له. هيدخل بيهم ويضيف منتجات.</p>
+      <div class="row"><input id="stUser" placeholder="اسم المستخدم" dir="ltr" autocapitalize="none" style="flex:1;min-width:140px"><input id="stPass" placeholder="كلمة المرور" dir="ltr" style="flex:1;min-width:140px"><button class="btn" id="addStaff">إنشاء حساب</button></div>
+      <div class="err" id="stErr"></div>
+      <div id="staffList"></div>
+    </div>
+  </section>
+
+  <div class="bar"><input id="q" type="search" placeholder="ابحث عن منتج..."></div>
+  <div class="tiles" id="tiles"></div>
+  <button class="btn alt" id="backBtn" hidden style="margin-bottom:10px">→ الأقسام</button>
+  <h2 id="catTitle" style="margin:0 0 10px"></h2>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" hidden>لا توجد منتجات حالياً.</div>
+</main>
+
+<section class="stats" id="stats" hidden>
+  <div><span class="ic">▦</span><b id="stCats">0</b><small>قسم</small></div>
+  <div><span class="ic">📦</span><b id="stProds">0</b><small>منتج</small></div>
+  <div><span class="ic">✓</span><b id="stAvail">0</b><small>متاح للشراء</small></div>
+</section>
+
+<footer>تي إكليسيا للمستلزمات الكنسية</footer>
+
+<aside class="drawer" id="drawer">
+  <div class="who"><h2>الأقسام</h2><button class="btn alt" id="dClose" aria-label="إغلاق">✕</button></div>
+  <div id="cats"></div>
+  <hr style="border:0;border-top:2px solid var(--line);margin:16px 0">
+  <button class="btn" id="ordBtn" hidden style="width:100%;margin-bottom:8px">الطلبات <span class="badge" id="ordBadge" style="background:var(--red)">0</span></button>
+  <button class="btn" id="panelLink" hidden style="width:100%;margin-bottom:8px">لوحة التحكم</button>
+  <button class="btn alt" id="staffLink" style="width:100%">دخول الموظفين</button>
+</aside>
+<div class="veil" id="veil"></div>
+
+<button class="btn cartfab" id="cartBtn">🛒 السلة <b id="cartN">0</b></button>
+
+<div class="modal" id="cartM">
+  <div class="box wide">
+    <h2>سلة المشتريات</h2>
+    <div id="cartList"></div>
+    <div id="cartTotal" class="price" style="margin:8px 0"></div>
+    <div id="checkout" hidden>
+      <input id="oName" placeholder="الاسم" autocomplete="name">
+      <input id="oPhone" type="tel" placeholder="رقم التليفون (هنتواصل معاك عليه)" autocomplete="tel">
+      <input id="oAddr" placeholder="العنوان (اختياري)">
+      <input id="oNote" placeholder="ملاحظات (اختياري)">
+    </div>
+    <div class="err" id="cartErr"></div>
+    <div class="row"><button class="btn" id="buy" hidden>تأكيد الطلب</button><button class="btn alt" id="cartClose">إغلاق</button></div>
+  </div>
+</div>
+
+<div class="modal" id="ordM">
+  <div class="box wide" style="max-width:640px">
+    <div class="who"><h2>الطلبات</h2><button class="btn alt" id="ordClose">إغلاق</button></div>
+    <div id="orders"></div>
+  </div>
+</div>
+
+<div class="modal" id="optM">
+  <div class="box wide">
+    <h2 id="optName"></h2>
+    <div id="optSizes"></div>
+    <div id="optEngs"></div>
+    <input id="optText" placeholder="اكتب النص المراد حفره" hidden>
+    <div class="price" id="optPrice" style="margin:8px 0"></div>
+    <div class="err" id="optErr"></div>
+    <div class="row"><button class="btn" id="optAdd">أضف للسلة</button><button class="btn alt" id="optClose">إلغاء</button></div>
+  </div>
+</div>
+
+<div class="modal" id="login">
+  <div class="box">
+    <h2>دخول الموظفين</h2>
+    <input id="lUser" placeholder="اسم المستخدم" autocomplete="username" autocapitalize="none" dir="ltr">
+    <input id="lPass" type="password" placeholder="كلمة المرور" autocomplete="current-password" dir="ltr">
+    <div class="err" id="lErr"></div>
+    <div class="row">
+      <button class="btn" id="eIn">دخول</button>
+      <button class="btn alt" id="lClose">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-auth-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-firestore-compat.js"></script>
+<script>
+/* ===== 1) ضع بيانات مشروعك من Firebase Console ===== */
+const firebaseConfig = {
+  apiKey: "AIzaSyDaGFRWdbemR_L2TOgJO5Wu_h8eGm28mQY",
+  authDomain: "ti-ekklesia-a34a5.firebaseapp.com",
+  projectId: "ti-ekklesia-a34a5",
+  storageBucket: "ti-ekklesia-a34a5.firebasestorage.app",
+  messagingSenderId: "711367277578",
+  appId: "1:711367277578:web:f7f3ee27a831acbd5533f3"
+};
+/* ===== 2) اسم مستخدم المشرف الأساسي (إنجليزي، حروف صغيرة) - لازم يتطابق مع الحساب اللي هتعمله في Firebase ===== */
+const DOMAIN = "@ti-ekklesia.app";
+const OWNER_USERS = ["moalim7salieb12"];
+const toEmail = u => u.trim().toLowerCase() + DOMAIN;
+const OWNERS = OWNER_USERS.map(toEmail);
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth(), db = firebase.firestore();
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const money = n => Number(n).toLocaleString("ar-EG", {maximumFractionDigits: 2}) + " ج.م";
+
+let products = [], user = null, role = null, editId = null;
+
+/* ---------- المتجر (للجميع) ---------- */
+db.collection("products").orderBy("createdAt", "desc").onSnapshot(s => {
+  products = s.docs.map(d => ({id: d.id, ...d.data()}));
+  render(); renderMine(); updCart(); if ($("cartM").classList.contains("open")) renderCart();
+}, e => { $("empty").hidden = false; $("empty").textContent = "تعذر تحميل المنتجات. راجع إعدادات Firebase."; });
+
+const gone = p => p.available === false || (typeof p.qty === "number" && p.qty <= 0);
+function render() {
+  renderCats();
+  const q = $("q").value.trim().toLowerCase();
+  const home = cat === null && !q;
+  $("tiles").hidden = !home; $("backBtn").hidden = cat === null;
+  $("catTitle").textContent = q ? "نتائج البحث" : cat === "__all" ? "كل المنتجات" : cat || "";
+  const match = p => (p.name + " " + (p.desc || "")).toLowerCase().includes(q);
+  const list = home ? [] : products.filter(p => q ? match(p) : (cat === "__all" || (p.category || "أخرى") === cat));
+  $("empty").hidden = home || list.length > 0;
+  $("empty").textContent = products.length ? "لا توجد منتجات هنا." : "لا توجد منتجات حالياً.";
+  $("grid").innerHTML = list.map(p => {
+    const d = Number(p.discount) || 0, final = p.price * (1 - d / 100), g = gone(p);
+    const ph = p.img ? `style="background-image:url('${esc(p.img)}')"` : "";
+    return `<article class="card" id="p-${p.id}">
+      <div class="ph" ${ph}>${p.img ? "" : "✝"}${g ? '<span class="tag gone">نفذت الكمية</span>' : d ? `<span class="tag">خصم ${d}%</span>` : ""}</div>
+      <div class="body"><h3>${esc(p.name)}</h3><p>${esc(p.desc)}</p>
+      <div class="price">${money(final)}${d ? `<span class="old">${money(p.price)}</span>` : ""}</div>
+      <button class="btn" data-add="${p.id}" ${g ? "disabled" : ""}>${g ? "نفذت الكمية" : hasOpt(p) ? "اختر وأضف للسلة" : "أضف للسلة"}</button></div></article>`;
+  }).join("");
+}
+$("q").oninput = render;
+
+/* ---------- تسجيل الدخول (مخفي: رابط صغير بالأسفل) ---------- */
+$("staffLink").onclick = () => { closeDrawer(); $("login").classList.add("open"); $("lErr").textContent = ""; };
+$("lClose").onclick = () => $("login").classList.remove("open");
+const showErr = e => $("lErr").textContent = ({
+  "auth/invalid-credential":"اسم المستخدم أو كلمة المرور غير صحيحة",
+  "auth/too-many-requests":"محاولات كتير، استنى شوية وحاول تاني",
+  "auth/email-already-in-use":"هذا الإيميل مسجل بالفعل، اضغط دخول",
+  "auth/weak-password":"كلمة المرور قصيرة (6 أحرف على الأقل)",
+  "auth/invalid-email":"الإيميل غير صالح",
+  "auth/unauthorized-domain":"الدومين ده مش مضاف في Firebase ← Authorized domains",
+  "auth/popup-closed-by-user":"اتقفلت نافذة الدخول، حاول تاني",
+  "auth/operation-not-allowed":"طريقة الدخول دي مش مفعلة في Firebase"
+}[e.code] || "تعذر تسجيل الدخول: " + e.code);
+const USER_RE = /^[a-z0-9._-]{3,30}$/;
+$("eIn").onclick = () => {
+  const u = $("lUser").value.trim().toLowerCase().split("@")[0];
+  if (!USER_RE.test(u)) { $("lErr").textContent = "اسم المستخدم بحروف إنجليزية وأرقام فقط (3 أحرف على الأقل)."; return; }
+  $("lErr").textContent = "";
+  auth.signInWithEmailAndPassword(toEmail(u), $("lPass").value).catch(showErr);
+};
+$("lPass").onkeydown = e => { if (e.key === "Enter") $("eIn").click(); };
+$("logout").onclick = () => auth.signOut();
+
+auth.onAuthStateChanged(async u => {
+  user = u; role = null;
+  if (u) {
+    const mail = (u.email || "").toLowerCase();
+    if (OWNERS.includes(mail)) role = "owner";
+    else {
+      try { role = (await db.collection("staff").doc(mail).get()).exists ? "staff" : null; } catch (e) { role = null; }
+    }
+    if (!role) { $("lErr").textContent = "هذا الحساب غير مصرح له بالدخول."; auth.signOut(); return; }
+    $("login").classList.remove("open");
+  }
+  $("panel").classList.toggle("open", !!role);
+  $("staffLink").hidden = !!role; $("panelLink").hidden = !role; $("ordBtn").hidden = !role;
+  $("ownerOnly").hidden = role !== "owner";
+  if (role) {
+    $("roleBadge").textContent = role === "owner" ? "مشرف" : "موظف";
+    $("whoami").textContent = u.email.split("@")[0];
+    $("mineTitle").textContent = "كل المنتجات";
+    if (role === "owner") loadStaff();
+    watchOrders();
+  } else stopOrders();
+  renderMine();
+});
+
+/* ---------- إضافة وتعديل المنتجات ---------- */
+function resetForm() {
+  editId = null;
+  ["fName","fPrice","fDisc","fDesc","fImg","fCat","fQty"].forEach(i => $(i).value = "");
+  $("sizeRows").innerHTML = $("engRows").innerHTML = ""; showPrev(""); $("fAvail").checked = true; $("formTitle").textContent = "إضافة منتج"; $("cancel").hidden = true; $("formErr").textContent = "";
+}
+$("cancel").onclick = resetForm;
+$("save").onclick = async () => {
+  const name = $("fName").value.trim(), price = parseFloat($("fPrice").value), disc = parseFloat($("fDisc").value) || 0;
+  if (!name || isNaN(price) || price < 0) { $("formErr").textContent = "اكتب اسم المنتج وسعراً صحيحاً."; return; }
+  if (disc < 0 || disc > 100) { $("formErr").textContent = "الخصم بين 0 و 100."; return; }
+  const data = {name, price, discount: disc, desc: $("fDesc").value.trim(), img: $("fImg").value.trim(), available: $("fAvail").checked, category: $("fCat").value.trim(), qty: $("fQty").value === "" ? null : Math.max(0, Math.floor(parseFloat($("fQty").value))), sizes: readRows("sizeRows"), engraves: readRows("engRows")};
+  try {
+    if (editId) await db.collection("products").doc(editId).update(data);
+    else await db.collection("products").add({...data, uid: user.uid, by: user.email.split("@")[0], createdAt: firebase.firestore.FieldValue.serverTimestamp()});
+    resetForm();
+  } catch (e) { $("formErr").textContent = "تعذر الحفظ: " + e.code; }
+};
+function renderMine() {
+  if (!role) { $("mine").innerHTML = ""; return; }
+  const mine = products;
+  $("mine").innerHTML = mine.length ? mine.map(p => `<div class="item"><span><b>${esc(p.name)}</b> — ${money(p.price)}${p.discount ? ` (خصم ${p.discount}%)` : ""}${typeof p.qty === "number" ? ` — الكمية: ${p.qty}` : ""} <small style="color:var(--mute)">· ${esc(p.by)}</small></span>
+    <span class="row" style="margin:0"><button class="btn alt" data-e="${p.id}">تعديل</button><button class="btn red" data-d="${p.id}">حذف</button></span></div>`).join("")
+    : '<div class="empty">لم تضف منتجات بعد. املأ النموذج بالأعلى.</div>';
+}
+$("mine").onclick = async e => {
+  const ed = e.target.dataset.e, del = e.target.dataset.d;
+  if (ed) {
+    const p = products.find(x => x.id === ed); editId = ed;
+    $("fName").value = p.name; $("fPrice").value = p.price; $("fDisc").value = p.discount || "";
+    $("fDesc").value = p.desc || ""; $("fImg").value = p.img || ""; showPrev(p.img || ""); $("fCat").value = p.category || ""; $("fQty").value = typeof p.qty === "number" ? p.qty : ""; fillRows("sizeRows", p.sizes, SZ_PH); fillRows("engRows", p.engraves, EN_PH); $("fAvail").checked = p.available !== false;
+    $("formTitle").textContent = "تعديل منتج"; $("cancel").hidden = false; $("panel").scrollIntoView({behavior: "smooth"});
+  }
+  if (del && confirm("حذف هذا المنتج نهائياً؟")) db.collection("products").doc(del).delete().catch(x => alert("تعذر الحذف: " + x.code));
+};
+
+/* ---------- إدارة الموظفين (للمشرف فقط) ---------- */
+async function loadStaff() {
+  try {
+    const s = await db.collection("staff").get();
+    $("staffList").innerHTML = s.docs.length ? s.docs.map(d => `<div class="item"><span>${esc(d.id.split("@")[0])}</span><button class="btn red" data-r="${esc(d.id)}">إزالة</button></div>`).join("") : '<div class="empty">لا يوجد موظفون بعد.</div>';
+  } catch (e) {}
+}
+let second = null;
+$("addStaff").onclick = async () => {
+  const u = $("stUser").value.trim().toLowerCase(), pw = $("stPass").value, err = $("stErr");
+  err.textContent = "";
+  if (!USER_RE.test(u)) { err.textContent = "اسم المستخدم بحروف إنجليزية وأرقام فقط (3 أحرف على الأقل)."; return; }
+  if (pw.length < 6) { err.textContent = "كلمة المرور 6 أحرف على الأقل."; return; }
+  if (OWNERS.includes(toEmail(u))) { err.textContent = "الاسم ده محجوز."; return; }
+  try {
+    second = second || firebase.initializeApp(firebaseConfig, "second");
+    const a2 = second.auth();
+    try { await a2.createUserWithEmailAndPassword(toEmail(u), pw); }
+    catch (e) { if (e.code !== "auth/email-already-in-use") throw e; err.textContent = "الحساب كان موجود، تم تفعيله بكلمة مروره القديمة."; }
+    await a2.signOut();
+    await db.collection("staff").doc(toEmail(u)).set({username: u, addedAt: firebase.firestore.FieldValue.serverTimestamp()});
+    $("stUser").value = $("stPass").value = ""; loadStaff();
+  } catch (e) { err.textContent = "تعذر إنشاء الحساب: " + e.code; }
+};
+$("staffList").onclick = async e => {
+  if (e.target.dataset.r && confirm("إزالة هذا الموظف؟")) { await db.collection("staff").doc(e.target.dataset.r).delete(); loadStaff(); }
+};
+
+/* ---------- رفع صورة من التليفون (بتتصغر وتتخزن مع المنتج) ---------- */
+function shrink(file, max = 800) {
+  return new Promise((ok, no) => {
+    const r = new FileReader(); r.onerror = no;
+    r.onload = () => {
+      const i = new Image(); i.onerror = no;
+      i.onload = () => {
+        const k = Math.min(1, max / Math.max(i.width, i.height)), c = document.createElement("canvas");
+        c.width = Math.round(i.width * k); c.height = Math.round(i.height * k);
+        c.getContext("2d").drawImage(i, 0, 0, c.width, c.height);
+        ok(c.toDataURL("image/jpeg", 0.72));
+      };
+      i.src = r.result;
+    };
+    r.readAsDataURL(file);
+  });
+}
+function showPrev(src) { $("fPrev").hidden = !src; if (src) $("fPrev").src = src; }
+$("fFile").onchange = async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try { const d = await shrink(f); $("fImg").value = d; showPrev(d); }
+  catch (x) { $("formErr").textContent = "تعذر قراءة الصورة، جرب صورة تانية."; }
+};
+
+/* ---------- خيارات المنتج (مقاسات وحفر) في لوحة التحكم ---------- */
+const SZ_PH = "المقاس (مثلاً: كبير)", EN_PH = "مكان الحفر (مثلاً: على القطعة الأولى)";
+function addRow(boxId, n, pr, ph) {
+  const r = document.createElement("div"); r.className = "orow";
+  r.innerHTML = `<input placeholder="${ph}" value="${esc(n || "")}"><input type="number" min="0" placeholder="السعر (+ ج.م)" value="${pr ? esc(pr) : ""}"><button class="btn red" type="button" data-rm="1">✕</button>`;
+  $(boxId).appendChild(r);
+}
+function fillRows(id, arr, ph) { $(id).innerHTML = ""; (arr || []).forEach(o => addRow(id, o.name, o.price, ph)); }
+function readRows(id) {
+  return [...$(id).querySelectorAll(".orow")].map(r => ({name: r.children[0].value.trim(), price: Math.max(0, parseFloat(r.children[1].value) || 0)})).filter(o => o.name);
+}
+$("addSize").onclick = () => addRow("sizeRows", "", "", SZ_PH);
+$("addEng").onclick = () => addRow("engRows", "", "", EN_PH);
+["sizeRows", "engRows"].forEach(id => $(id).onclick = e => { if (e.target.dataset.rm) e.target.closest(".orow").remove(); });
+
+/* ---------- السلة ---------- */
+let cart = {};
+try {
+  cart = JSON.parse(localStorage.getItem("cart") || "{}");
+  Object.keys(cart).forEach(k => { if (typeof cart[k] === "number") cart[k] = {id: k, q: cart[k], size: "", sp: 0, eng: [], text: ""}; });
+} catch (e) { cart = {}; }
+const unit = p => p.price * (1 - (Number(p.discount) || 0) / 100);
+const hasOpt = p => (p.sizes || []).length > 0 || (p.engraves || []).length > 0;
+const maxQ = p => typeof p.qty === "number" ? p.qty : Infinity;
+const linePrice = (p, l) => unit(p) + (l.sp || 0) + (l.eng || []).reduce((a, o) => a + (o.p || 0), 0);
+const inCart = id => Object.values(cart).filter(l => l.id === id).reduce((a, l) => a + l.q, 0);
+function saveCart() { try { localStorage.setItem("cart", JSON.stringify(cart)); } catch (e) {} updCart(); }
+function cartLines() {
+  return Object.entries(cart).map(([k, l]) => { const p = products.find(x => x.id === l.id); return p && !gone(p) ? {k, p, l} : null; }).filter(Boolean);
+}
+function updCart() { $("cartN").textContent = cartLines().reduce((a, x) => a + x.l.q, 0); }
+function addLine(p, v) {
+  v = v || {};
+  const k = [p.id, v.size || "", (v.eng || []).map(o => o.n).join(","), v.text || ""].join("|");
+  if (inCart(p.id) >= maxQ(p)) return false;
+  const l = cart[k] || (cart[k] = {id: p.id, q: 0, size: v.size || "", sp: v.sp || 0, eng: v.eng || [], text: v.text || ""});
+  l.q++; saveCart(); return true;
+}
+function renderCart() {
+  const L = cartLines();
+  $("cartList").innerHTML = L.length ? L.map(({k, p, l}) => `<div class="item"><span>${esc(p.name)}${l.size ? " — " + esc(l.size) : ""}${l.eng.length ? `<br><small>حفر: ${l.eng.map(o => esc(o.n)).join("، ")} «${esc(l.text)}»</small>` : ""}<br><small>${money(linePrice(p, l))}</small></span>
+    <span class="qty"><button data-m="${esc(k)}" aria-label="نقص">−</button>${l.q}<button data-p="${esc(k)}" aria-label="زيادة">+</button><button class="del" data-del="${esc(k)}" aria-label="حذف من السلة">🗑</button></span></div>`).join("")
+    : '<div class="empty">السلة فاضية. أضف منتجات من الصفحة.</div>';
+  $("cartTotal").textContent = L.length ? "الإجمالي: " + money(L.reduce((a, x) => a + linePrice(x.p, x.l) * x.l.q, 0)) : "";
+  $("checkout").hidden = $("buy").hidden = !L.length;
+}
+$("cartList").onclick = e => {
+  const b = e.target.closest("button"); if (!b) return;
+  const d = b.dataset, k = d.m || d.p || d.del;
+  if (!k || !cart[k]) return;
+  if (d.m) { cart[k].q--; if (cart[k].q <= 0) delete cart[k]; }
+  if (d.p) { const p = products.find(x => x.id === cart[k].id); if (p && inCart(p.id) < maxQ(p)) cart[k].q++; }
+  if (d.del) delete cart[k];
+  saveCart(); renderCart();
+};
+$("grid").onclick = e => {
+  const t = e.target.closest("button"); if (!t || !t.dataset.add) return;
+  const p = products.find(x => x.id === t.dataset.add); if (!p) return;
+  if (hasOpt(p)) { openOpt(p); return; }
+  const ok = addLine(p);
+  t.textContent = ok ? "تمت الإضافة ✓" : "وصلت للحد الأقصى المتاح";
+  setTimeout(() => t.textContent = "أضف للسلة", ok ? 900 : 1400);
+};
+$("cartBtn").onclick = () => { $("cartErr").textContent = ""; renderCart(); $("cartM").classList.add("open"); };
+$("cartClose").onclick = () => $("cartM").classList.remove("open");
+
+/* ---------- اختيار المقاس والحفر ---------- */
+let optP = null;
+function openOpt(p) {
+  optP = p; $("optName").textContent = p.name;
+  const sz = p.sizes || [], en = p.engraves || [];
+  $("optSizes").innerHTML = sz.length ? "<h3>المقاس</h3>" + sz.map((o, i) => `<label class="opt"><input type="radio" name="sz" value="${i}"${i === 0 ? " checked" : ""}> ${esc(o.name)}${o.price ? ` (+${money(o.price)})` : ""}</label>`).join("") : "";
+  $("optEngs").innerHTML = en.length ? "<h3>الحفر</h3>" + en.map((o, i) => `<label class="opt"><input type="checkbox" data-e="${i}"> ${esc(o.name)} (+${money(o.price)})</label>`).join("") : "";
+  $("optText").value = ""; $("optErr").textContent = ""; calcOpt(); $("optM").classList.add("open");
+}
+function readOpt() {
+  const sz = optP.sizes || [], en = optP.engraves || [];
+  const r = document.querySelector('#optSizes input:checked');
+  const size = r ? sz[+r.value] : null;
+  const engs = [...document.querySelectorAll("#optEngs input:checked")].map(i => en[+i.dataset.e]);
+  return {size, engs};
+}
+function calcOpt() {
+  const {size, engs} = readOpt();
+  $("optText").hidden = !engs.length;
+  $("optPrice").textContent = money(unit(optP) + (size ? size.price : 0) + engs.reduce((a, o) => a + o.price, 0));
+}
+$("optM").onchange = calcOpt;
+$("optClose").onclick = () => $("optM").classList.remove("open");
+$("optAdd").onclick = () => {
+  const {size, engs} = readOpt(), text = $("optText").value.trim();
+  if (engs.length && !text) { $("optErr").textContent = "اكتب النص المراد حفره."; return; }
+  const ok = addLine(optP, {size: size ? size.name : "", sp: size ? size.price : 0, eng: engs.map(o => ({n: o.name, p: o.price})), text: engs.length ? text : ""});
+  if (!ok) { $("optErr").textContent = "وصلت للحد الأقصى المتاح."; return; }
+  $("optM").classList.remove("open");
+};
+
+$("buy").onclick = async () => {
+  const L = cartLines(), name = $("oName").value.trim();
+  const phone = $("oPhone").value.trim().replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/[\s-]/g, "");
+  if (!L.length) return;
+  if (name.length < 2) { $("cartErr").textContent = "اكتب اسمك."; return; }
+  if (!/^\+?[0-9]{8,15}$/.test(phone)) { $("cartErr").textContent = "اكتب رقم تليفون صحيح."; return; }
+  $("buy").disabled = true; $("cartErr").textContent = "";
+  const total = Math.round(L.reduce((a, x) => a + linePrice(x.p, x.l) * x.l.q, 0) * 100) / 100;
+  try {
+    const orderRef = db.collection("orders").doc();
+    const need = {}; L.forEach(({p, l}) => need[p.id] = (need[p.id] || 0) + l.q);
+    const ids = Object.keys(need);
+    await db.runTransaction(async t => {
+      const snaps = await Promise.all(ids.map(id => t.get(db.collection("products").doc(id))));
+      snaps.forEach((sn, i) => {
+        const d = sn.data();
+        if (!d || d.available === false || (typeof d.qty === "number" && d.qty < need[ids[i]])) throw {code: "stock", item: d ? d.name : ""};
+      });
+      snaps.forEach((sn, i) => { const d = sn.data(); if (typeof d.qty === "number") t.update(sn.ref, {qty: d.qty - need[ids[i]]}); });
+      t.set(orderRef, {
+        name, phone, address: $("oAddr").value.trim(), note: $("oNote").value.trim(),
+        items: L.map(({p, l}) => ({id: p.id, name: p.name, price: Math.round(linePrice(p, l) * 100) / 100, qty: l.q, size: l.size, eng: l.eng.map(o => o.n), text: l.text})),
+        total, status: "new", createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    });
+    cart = {}; saveCart();
+    $("cartList").innerHTML = '<p class="ok">تم استلام طلبك ✓ هنتواصل معاك على رقمك قريباً.</p>';
+    $("cartTotal").textContent = ""; $("checkout").hidden = $("buy").hidden = true;
+  } catch (e) {
+    $("cartErr").textContent = e.code === "stock" ? "للأسف «" + e.item + "» الكمية المتاحة منه أقل من المطلوب. عدّل السلة وحاول تاني." : "تعذر إرسال الطلب: " + e.code;
+  }
+  $("buy").disabled = false;
+};
+
+/* ---------- الطلبات (للمشرف والموظفين - من القائمة الجانبية) ---------- */
+let unsubOrders = null;
+function stopOrders() { if (unsubOrders) unsubOrders(); unsubOrders = null; $("orders").innerHTML = ""; $("ordBadge").textContent = "0"; }
+function watchOrders() {
+  if (unsubOrders) return;
+  unsubOrders = db.collection("orders").orderBy("createdAt", "desc").limit(100).onSnapshot(s => {
+    const L = s.docs.map(d => ({id: d.id, ...d.data()}));
+    $("ordBadge").textContent = L.filter(o => !o.delivered).length;
+    $("orders").innerHTML = L.length ? L.map(o => {
+      const n = String(o.phone).replace(/\D/g, "").replace(/^0/, "20");
+      const st = o.delivered ? "تم التوصيل" : o.prepared ? "تم التجهيز" : o.paid ? "تم الدفع" : "جديد";
+      const b = (f, t) => `<button class="stb${o[f] ? " on" : ""}" data-o="${o.id}" data-f="${f}" data-v="${o[f] ? 1 : 0}">${t}</button>`;
+      return `<div class="ord"><b>${esc(o.name)}</b> <span class="badge">${st}</span><br>
+        <a href="tel:${esc(o.phone)}">${esc(o.phone)}</a> · <a href="https://wa.me/${n}" target="_blank" rel="noopener">واتساب</a>
+        ${o.address ? "<br>" + esc(o.address) : ""}${o.note ? "<br><small>" + esc(o.note) + "</small>" : ""}
+        <ul style="padding-inline-start:20px">${(o.items || []).map(i => `<li>${esc(i.name)}${i.size ? " — " + esc(i.size) : ""} × ${i.qty}${i.eng && i.eng.length ? `<br><small>حفر: ${i.eng.map(x => esc(x)).join("، ")} «${esc(i.text || "")}»</small>` : ""}</li>`).join("")}</ul>
+        <b>${money(o.total)}</b>
+        <div class="row">${b("paid", "تم الدفع")}${b("prepared", "تم التجهيز")}${b("delivered", "تم التوصيل")}<button class="btn red" data-x="${o.id}">حذف</button></div></div>`;
+    }).join("") : '<div class="empty">لا توجد طلبات.</div>';
+  }, e => { $("orders").textContent = "تعذر تحميل الطلبات: " + e.code; });
+}
+$("orders").onclick = e => {
+  const b = e.target.closest("button"); if (!b) return; const d = b.dataset;
+  if (d.f) db.collection("orders").doc(d.o).update({[d.f]: d.v !== "1"});
+  if (d.x && confirm("حذف الطلب نهائياً؟")) db.collection("orders").doc(d.x).delete();
+};
+$("ordBtn").onclick = () => { closeDrawer(); $("ordM").classList.add("open"); };
+$("ordClose").onclick = () => $("ordM").classList.remove("open");
+
+/* ---------- القائمة الجانبية والأقسام ---------- */
+let cat = null;
+function openDrawer() { $("drawer").classList.add("open"); $("veil").classList.add("open"); }
+function closeDrawer() { $("drawer").classList.remove("open"); $("veil").classList.remove("open"); }
+function renderCats() {
+  const g = {}, im = {};
+  products.forEach(p => { const c = p.category || "أخرى"; (g[c] = g[c] || []).push(p); if (p.img && !im[c]) im[c] = p.img; });
+  const names = Object.keys(g).sort((a, b) => a.localeCompare(b, "ar"));
+  $("cats").innerHTML = `<button class="catbtn${cat === null ? " on" : ""}" data-c="__home">كل الأقسام</button>`
+    + names.map(n => `<div class="cgrp"><button class="chead${cat === n ? " on" : ""}" data-c="${esc(n)}">${esc(n)}</button>`
+      + g[n].map(p => `<button class="citem${gone(p) ? " out" : ""}" data-c="${esc(n)}" data-pid="${p.id}">${esc(p.name)}</button>`).join("") + `</div>`).join("");
+  $("tiles").innerHTML = names.map(n => `<button class="tile" data-c="${esc(n)}"><span class="tph" ${im[n] ? `style="background-image:url('${esc(im[n])}')"` : ""}>${im[n] ? "" : "✝"}</span><b>${esc(n)}</b><small>${g[n].length} منتج</small></button>`).join("")
+    || '<div class="empty">لا توجد أقسام بعد.</div>';
+  $("catList").innerHTML = names.filter(n => n !== "أخرى").map(n => `<option value="${esc(n)}">`).join("");
+  const nf = n => n.toLocaleString("ar-EG");
+  $("stCats").textContent = nf(names.length); $("stProds").textContent = nf(products.length);
+  $("stAvail").textContent = nf(products.filter(p => !gone(p)).length);
+  $("stats").hidden = !products.length;
+}
+function pickCat(k, pid) {
+  cat = k === "__home" ? null : k; $("q").value = ""; render();
+  const el = pid && $("p-" + pid);
+  if (el) { el.scrollIntoView({behavior: "smooth", block: "center"}); el.classList.add("flash"); setTimeout(() => el.classList.remove("flash"), 1800); }
+  else window.scrollTo({top: 0, behavior: "smooth"});
+}
+$("cats").onclick = e => { const b = e.target.closest("button"); if (b) { pickCat(b.dataset.c, b.dataset.pid); closeDrawer(); } };
+$("tiles").onclick = e => { const b = e.target.closest("button"); if (b) pickCat(b.dataset.c); };
+$("backBtn").onclick = () => pickCat("__home");
+$("menuBtn").onclick = openDrawer; $("dClose").onclick = closeDrawer; $("veil").onclick = closeDrawer;
+$("panelLink").onclick = () => { closeDrawer(); $("panel").scrollIntoView({behavior: "smooth"}); };
+</script>
+</body>
+</html>
