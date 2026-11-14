@@ -1,0 +1,16 @@
+{
+  "id": "./",
+  "name": "تي إكليسيا للمستلزمات الكنسية",
+  "short_name": "تي إكليسيا",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faf6dc",
+  "theme_color": "#0f0f4a",
+  "icons": [
+    { "src": "logo.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
