@@ -57,6 +57,10 @@ footer .cv{font-weight:600;color:var(--gold2);letter-spacing:.03em}
 .modal.open{display:grid}
 .box{background:var(--paper);border-radius:10px;padding:24px;width:100%;max-width:400px;border:1px solid var(--gold);box-shadow:0 0 0 5px var(--paper),0 0 0 6px var(--line),0 20px 50px rgba(0,0,0,.35)}
 .box h2{margin-bottom:10px;color:var(--navy);font-size:1.5rem}
+.box select{width:100%;padding:10px 12px;margin:5px 0;border:1px solid var(--line);border-radius:6px;background:#fff;font:inherit;color:inherit}
+.box select:focus{outline:none;border-color:var(--gold)}
+.locrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:5px 0}
+.locrow small{color:var(--navy)}
 .box input,.panel input,.panel textarea{width:100%;padding:10px 12px;margin:5px 0;border:1px solid var(--line);border-radius:6px;background:#fff}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .err{color:var(--red);min-height:1.4em;font-size:.9rem}
@@ -252,7 +256,16 @@ footer .cv{font-weight:600;color:var(--gold2);letter-spacing:.03em}
     <div id="checkout" hidden>
       <input id="oName" placeholder="الاسم" autocomplete="name">
       <input id="oPhone" type="tel" placeholder="رقم التليفون (هنتواصل معاك عليه)" autocomplete="tel">
-      <input id="oAddr" placeholder="العنوان (اختياري)">
+      <select id="oMethod" aria-label="طريقة الاستلام">
+        <option value="">اختار طريقة الاستلام</option>
+        <option value="pickup">استلام من الفرع</option>
+        <option value="delivery">توصيل للعنوان</option>
+      </select>
+      <div id="pickBox" hidden><small>الفرع: العمرانية — قدام كنيسة ماربولس</small></div>
+      <div id="delivBox" hidden>
+        <input id="oAddr" placeholder="اكتب عنوانك بالتفصيل">
+        <div class="locrow"><button type="button" class="btn alt" id="locBtn">📍 إضافة لوكيشن</button><small id="locSt"></small></div>
+      </div>
       <input id="oNote" placeholder="ملاحظات (اختياري)">
     </div>
     <div class="err" id="cartErr"></div>
@@ -740,6 +753,23 @@ $("optAdd").onclick = () => {
   $("optM").classList.remove("open");
 };
 
+let orderLoc = null;
+$("oMethod").onchange = () => {
+  const v = $("oMethod").value;
+  $("pickBox").hidden = v !== "pickup";
+  $("delivBox").hidden = v !== "delivery";
+};
+$("locBtn").onclick = () => {
+  const st = $("locSt");
+  if (!navigator.geolocation) { st.textContent = "المتصفح لا يدعم تحديد الموقع."; return; }
+  st.textContent = "جاري تحديد موقعك...";
+  navigator.geolocation.getCurrentPosition(p => {
+    const lat = Math.round(p.coords.latitude * 1e6) / 1e6, lng = Math.round(p.coords.longitude * 1e6) / 1e6;
+    orderLoc = {lat, lng, url: "https://www.google.com/maps?q=" + lat + "," + lng};
+    st.textContent = "✓ تم إضافة الموقع";
+  }, () => { st.textContent = "مقدرناش نحدد الموقع (اسمح للموقع بالوصول للّوكيشن)، اكتب العنوان بدقة."; }, {enableHighAccuracy: true, timeout: 12000});
+};
+
 $("buy").onclick = async () => {
   if (!user) { openCust("سجّل دخولك الأول عشان تكمل الطلب."); return; }
   try { await user.getIdToken(true); } catch (e) {}
@@ -748,6 +778,10 @@ $("buy").onclick = async () => {
   if (!L.length) return;
   if (name.length < 2) { $("cartErr").textContent = "اكتب اسمك."; return; }
   if (!/^\+?[0-9]{8,15}$/.test(phone)) { $("cartErr").textContent = "اكتب رقم تليفون صحيح."; return; }
+  const method = $("oMethod").value;
+  if (!method) { $("cartErr").textContent = "اختار استلام من الفرع ولا توصيل."; return; }
+  const addr = method === "delivery" ? $("oAddr").value.trim() : "";
+  if (method === "delivery" && addr.length < 5) { $("cartErr").textContent = "اكتب عنوان التوصيل."; return; }
   $("buy").disabled = true; $("cartErr").textContent = "";
   const total = Math.round(L.reduce((a, x) => a + linePrice(x.p, x.l) * x.l.q, 0) * 100) / 100;
   try {
@@ -762,12 +796,12 @@ $("buy").onclick = async () => {
       });
       snaps.forEach((sn, i) => { const d = sn.data(); if (typeof d.qty === "number") t.update(sn.ref, {qty: d.qty - need[ids[i]]}); });
       t.set(orderRef, {
-        name, phone, address: $("oAddr").value.trim(), note: $("oNote").value.trim(),
+        name, phone, address: addr, method, location: method === "delivery" ? orderLoc : null, note: $("oNote").value.trim(),
         items: L.map(({p, l}) => ({id: p.id, name: p.name, price: Math.round(linePrice(p, l) * 100) / 100, qty: l.q, size: l.size, eng: l.eng.map(o => o.n), text: l.text})),
         total, status: "new", createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
     });
-    cart = {}; saveCart();
+    orderLoc = null; cart = {}; saveCart();
     $("cartList").innerHTML = '<p class="ok">تم استلام طلبك ✓ هنتواصل معاك على رقمك قريباً.</p>';
     $("cartTotal").textContent = ""; $("checkout").hidden = $("buy").hidden = true;
   } catch (e) {
@@ -811,7 +845,7 @@ function watchOrders() {
       const b = (f, t) => `<button class="stb${o[f] ? " on" : ""}" data-o="${o.id}" data-f="${f}" data-v="${o[f] ? 1 : 0}">${t}</button>`;
       return `<div class="ord"><b>${esc(o.name)}</b> <span class="badge">${st}</span><br>
         <a href="tel:${esc(o.phone)}">${esc(o.phone)}</a> · <a href="https://wa.me/${n}" target="_blank" rel="noopener">واتساب</a>
-        ${o.address ? "<br>" + esc(o.address) : ""}${o.note ? "<br><small>" + esc(o.note) + "</small>" : ""}
+        <br><b>${o.method === "delivery" ? "🚚 توصيل" : o.method === "pickup" ? "🏪 استلام من الفرع" : ""}</b>${o.address ? "<br>" + esc(o.address) : ""}${o.location && o.location.url ? `<br><a href="${esc(o.location.url)}" target="_blank" rel="noopener">📍 فتح الموقع على الخريطة</a>` : ""}${o.note ? "<br><small>" + esc(o.note) + "</small>" : ""}
         <ul style="padding-inline-start:20px">${(o.items || []).map(i => `<li>${esc(i.name)}${i.size ? " — " + esc(i.size) : ""} × ${i.qty}${i.eng && i.eng.length ? `<br><small>حفر: ${i.eng.map(x => esc(x)).join("، ")} «${esc(i.text || "")}»</small>` : ""}</li>`).join("")}</ul>
         <b>${money(o.total)}</b>
         <div class="row">${b("paid", "تم الدفع")}${b("prepared", "تم التجهيز")}${b("delivered", "تم التوصيل")}<button class="btn red" data-x="${o.id}">حذف</button></div></div>`;
